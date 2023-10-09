@@ -123,7 +123,7 @@
   
 <script>
 import DataService from '@/services/DataService';
-import Swal from 'sweetalert2';
+import NotificationService from '@/services/NotificationService';
 
 export default {
     data() {
@@ -174,11 +174,10 @@ export default {
                 console.log({ response });
                 this.products = response.productList;
             } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Products loading failed',
-                    text: 'There was an error loading your products. Try again.',
-                });
+                NotificationService.showFailedNotification(
+                    'Products loading failed',
+                    'There was an error loading your products. Try again.'
+                );
             }
         },
         async copyToClipboard(url, productId) {
@@ -192,11 +191,10 @@ export default {
                 }, 2000);
             } catch ($e) {
                 console.error($e);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error when copying',
-                    text: `An error occurred while copying the URL, here it is: ${url}`,
-                });
+                NotificationService.showFailedNotification(
+                    'Error when copying',
+                    `An error occurred while copying the URL, here it is: ${url}`
+                );
             }
         },
         validateImage(event) {
@@ -205,11 +203,10 @@ export default {
             if (!selectedFile) {
                 this.imagePreviewUrl = null;
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error loading image',
-                    text: 'No image uploaded',
-                });
+                NotificationService.showFailedNotification(
+                    'Error loading image',
+                    'No image uploaded'
+                );
 
                 return;
             }
@@ -217,22 +214,20 @@ export default {
             const allowedExtensions = ["jpg", "jpeg", "png"];
             const extension = selectedFile.name.split(".").pop().toLowerCase();
             if (!allowedExtensions.includes(extension)) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error loading image',
-                    text: 'Invalid file extension. Please choose a valid image file (jpg, jpeg, png).',
-                });
+                NotificationService.showFailedNotification(
+                    'Error loading image',
+                    'Invalid file extension. Please choose a valid image file (jpg, jpeg, png).'
+                );
 
                 return;
             }
 
             const maxFileSize = 5 * 1024 * 1024; //5MB
             if (selectedFile.size > maxFileSize) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error loading image',
-                    text: 'The selected image is too large. The maximum size allowed is 5 MB',
-                });
+                NotificationService.showFailedNotification(
+                    'Error loading image',
+                    'The selected image is too large. The maximum size allowed is 5 MB'
+                );
 
                 return;
             }
@@ -282,12 +277,11 @@ export default {
 
                 const response = await DataService.post('/Sales/CreateProduct', true, this.newProduct);
                 const url = `${import.meta.env.VITE_OWN_DOMAIN}/${response.url}`;
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Successful creation',
-                    text: `Successfully created product. ${uploadedImage === false ? 'However, there was a problem saving your image.' : ''
-                        } This is the URL for purchases: ${url}`,
-                });
+                NotificationService.showSuccessNotification(
+                    'Successful creation',
+                    `Successfully created product. ${uploadedImage === false ? 'However, there was a problem saving your image.' : ''
+                    } This is the URL for purchases: ${url}`
+                );
 
                 await this.loadSoldProducts();
                 this.newProduct.name = null;
@@ -297,20 +291,17 @@ export default {
                 this.newProduct.paymentPeriod = null;
             } catch (error) {
                 if (!error.response.data.message) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Creation failed',
-                        text: 'There was an error creating the product. Please try again.',
-                    });
+                    NotificationService.showFailedNotification(
+                        'Creation failed',
+                        'There was an error creating the product. Please try again.'
+                    );
 
                     return;
                 }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Creation failed',
-                    text: error.response.data.message,
-                });
+                NotificationService.showFailedNotification(
+                    'Creation failed',
+                    error.response.data.message)
             }
         },
         prevPage() {

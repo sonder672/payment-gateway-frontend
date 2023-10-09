@@ -126,7 +126,7 @@
   
 <script>
 import DataService from '@/services/DataService';
-import Swal from 'sweetalert2';
+import NotificationService from '@/services/NotificationService';
 
 export default {
     data() {
@@ -176,11 +176,10 @@ export default {
                 const response = await DataService.get(`/Sales/GetProduct?productUuid=${this.productId}`);
                 this.product = response;
             } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Failed product loading',
-                    text: 'There was a problem loading the product you want to purchase. Try later'
-                });
+                NotificationService.showFailedNotification(
+                    'Failed product loading',
+                    'There was a problem loading the product you want to purchase. Try later'
+                );
 
                 this.$router.push({ name: 'home' });
                 console.error(error);
@@ -228,28 +227,26 @@ export default {
                 };
 
                 const response = await DataService.post('/Purchase/PurchaseProduct', true, requestData);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Successful purchase',
-                    text: response.message
-                });
+                NotificationService.showSuccessNotification(
+                    'Successful purchase',
+                    response.message
+                );
+
                 this.resetCreditCardAndUser();
             } catch (error) {
                 if (!error.response.data.message) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Failed purchase',
-                        text: 'An error occurred while paying. Try again.',
-                    });
+                    NotificationService.showFailedNotification(
+                        'Failed purchase',
+                        'An error occurred while paying. Try again.'
+                    );
 
                     return;
                 }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Failed purchase',
-                    text: error.response.data.message,
-                });
+                NotificationService.showFailedNotification(
+                    'Failed purchase',
+                    error.response.data.message
+                );
             }
         },
         resetCreditCardAndUser() {

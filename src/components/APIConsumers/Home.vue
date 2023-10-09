@@ -69,8 +69,8 @@
   
 <script>
 import DataService from '@/services/DataService';
+import NotificationService from '@/services/NotificationService';
 import { format, addMonths, addDays } from "date-fns";
-import Swal from 'sweetalert2';
 
 export default {
     data() {
@@ -119,11 +119,10 @@ export default {
                 console.log({ response });
                 this.products = response.products;
             } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Memberships loading failed',
-                    text: 'There was an error loading your memberships. Try again.',
-                });
+                NotificationService.showFailedNotification(
+                    'Memberships loading failed',
+                    'There was an error loading your memberships. Try again.'
+                )
 
                 console.error(error);
             }
@@ -161,27 +160,24 @@ export default {
                     true,
                     { productId: product.productId });
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Successful membership cancellation',
-                    text: response.message,
-                });
+                NotificationService.showSuccessNotification(
+                    'Successful membership cancellation',
+                    response.message
+                )
             } catch (error) {
                 if (!error.response.data.message) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Failed membership cancellation',
-                        text: 'An error occurred while canceling membership. Try again.',
-                    });
+                    NotificationService.showFailedNotification(
+                        'Failed membership cancellation',
+                        'An error occurred while canceling membership. Try again.'
+                    )
 
                     return;
                 }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Failed membership cancellation',
-                    text: error.response.data.message,
-                });
+                NotificationService.showFailedNotification(
+                    'Failed membership cancellation',
+                    error.response.data.message
+                )
             }
         },
         formatPaymentPeriod(paymentPeriod) {

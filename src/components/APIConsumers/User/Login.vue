@@ -32,7 +32,7 @@
 <script>
 import AuthService from '@/services/AuthService';
 import DataService from '@/services/DataService';
-import Swal from 'sweetalert2';
+import NotificationService from '@/services/NotificationService';
 
 export default {
     data() {
@@ -70,28 +70,26 @@ export default {
                 AuthService.setAuthToken(response.jwt);
                 localStorage.setItem('canSell', response.canSell);
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Successful login',
-                    text: 'You have successfully logged in',
-                });
+                NotificationService.showSuccessNotification(
+                    'Successful login',
+                    'You have successfully logged in'
+                );
+
                 this.$router.push({ name: 'home' });
             } catch (error) {
                 if (!error.response.data.message) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login failed',
-                        text: 'An error occurred while logging in. Please try again.',
-                    });
+                    NotificationService.showFailedNotification(
+                        'Login failed',
+                        'An error occurred while logging in. Please try again.'
+                    );
 
                     return;
                 }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Login failed',
-                    text: error.response.data.message,
-                });
+                NotificationService.showFailedNotification(
+                    'Login failed',
+                    error.response.data.message
+                );
             }
         },
     },

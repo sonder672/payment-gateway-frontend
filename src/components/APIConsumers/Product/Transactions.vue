@@ -68,6 +68,7 @@
 <script>
 import DataService from '@/services/DataService';
 import { format } from "date-fns";
+import NotificationService from '@/services/NotificationService';
 
 export default {
     data() {
@@ -102,11 +103,10 @@ export default {
                 this.filteredTransactions = [...this.transactions];
                 this.currentPage = 1;
             } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Transactions loading failed',
-                    text: 'There was an error loading your transactions. Try again.',
-                });
+                NotificationService.showFailedNotification(
+                    'Transactions loading failed',
+                    'There was an error loading your transactions. Try again.'
+                );
             }
         },
         formatDate(dateString) {

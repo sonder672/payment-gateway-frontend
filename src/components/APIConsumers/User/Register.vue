@@ -42,7 +42,7 @@
   
 <script>
 import DataService from '@/services/DataService';
-import Swal from 'sweetalert2';
+import NotificationService from '@/services/NotificationService';
 
 export default {
     data() {
@@ -87,29 +87,26 @@ export default {
                     name: this.name
                 });
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: response.message,
-                });
+                NotificationService.showSuccessNotification(
+                    'Success',
+                    response.message
+                )
 
                 this.$router.push({ name: 'login' });
             } catch (error) {
                 if (!error.response.data.message) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Creation error',
-                        text: 'An error occurred while logging in. Please try again.',
-                    });
+                    NotificationService.showFailedNotification(
+                        'Creation error',
+                        'An error occurred while logging in. Please try again.'
+                    )
 
                     return;
                 }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Creation error',
-                    text: error.response.data.message,
-                });
+                NotificationService.showFailedNotification(
+                    'Creation error',
+                    error.response.data.message
+                )
             }
         },
     },
