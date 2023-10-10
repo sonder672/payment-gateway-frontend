@@ -4,7 +4,7 @@ import LoginView from '@/components/APIConsumers/User/Login.vue';
 import RegisterView from '@/components/APIConsumers/User/Register.vue';
 import CheckOutView from '@/components/APIConsumers/Purchase/CheckOut.vue';
 import HomeView from '@/components/APIConsumers/Home.vue';
-import TransactionsView from '@/components/APIConsumers/Product/Transactions.vue';
+import TransactionsView from '@/components/APIConsumers/User/Transactions.vue';
 
 const router = createRouter({
   history: createWebHistory(),
